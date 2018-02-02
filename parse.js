@@ -29,7 +29,15 @@ const endOfComment = (src, offset) => {
 const endOfKey = (src, offset) => {
   let ch = src[offset]
   while (ch && ch !== '\r' && ch !== '\n' && ch !== '\t' && ch !== '\f' && ch !== ' ' && ch !== ':' && ch !== '=') {
-    offset += ch === '\\' ? 2 : 1
+    if (ch === '\\') {
+      if (src[offset + 1] === '\n') {
+        offset = endOfIndent(src, offset + 2)
+      } else {
+        offset += 2
+      }
+    } else {
+      offset += 1
+    }
     ch = src[offset]
   }
   return offset
@@ -38,12 +46,20 @@ const endOfKey = (src, offset) => {
 const endOfSeparator = (src, offset) => {
   let ch = src[offset]
   let hasEqSign = false
-  while (ch === '\t' || ch === '\f' || ch === ' ') {
-    if (ch === '=' || ch === ':') {
-      if (hasEqSign) break
-      hasEqSign = true
+  loop: while (ch === '\t' || ch === '\f' || ch === ' ' || ch === '=' || ch === ':' || ch === '\\') {
+    switch (ch) {
+      case '\\':
+        if (src[offset + 1] !== '\n') break loop
+        offset = endOfIndent(src, offset + 2)
+        break
+      case '=':
+      case ':':
+        if (hasEqSign) break loop
+        hasEqSign = true
+        // fallthrough
+      default:
+        offset += 1
     }
-    offset += 1
     ch = src[offset]
   }
   return offset
@@ -58,13 +74,18 @@ const endOfValue = (src, offset) => {
   return offset
 }
 
-const unescape = (str) => str.replace(/\\(u[0-9a-fA-F]{4}|\r?\n[ \t\f]*|.)/g, (match, code) => {
-  switch (code[0]) {
+const unescape = (str) => str.replace(/\\(u[0-9a-fA-F]{4}|\r?\n[ \t\f]*|.)?/g, (match, code) => {
+  switch (code && code[0]) {
+    case 'f': return '\f'
+    case 'n': return '\n'
+    case 'r': return '\r'
+    case 't': return '\t'
     case 'u':
       const c = parseInt(code.substr(1), 16)
       return isNaN(c) ? code : String.fromCharCode(c)
     case '\r':
     case '\n':
+    case undefined:
       return ''
     default:
       return code
