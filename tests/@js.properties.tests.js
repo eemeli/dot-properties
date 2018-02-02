@@ -10,7 +10,12 @@ describe('@js.properties', () => {
     test(name, () => {
       const src = fs.readFileSync(path.resolve(root, name), 'utf8')
       const tgt = fs.readFileSync(path.resolve(root, name + '.json'), 'utf8')
-      expect(parse(src)).toMatchObject(JSON.parse(tgt))
+      const exp = JSON.parse(tgt)
+      const res = parse(src)
+      expect(res).toMatchObject(exp)
+      const src2 = stringify(res)
+      const res2 = parse(src2)
+      expect(res2).toMatchObject(exp)
     })
   })
 })

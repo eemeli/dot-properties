@@ -3,12 +3,16 @@ const escapeNonAscii = (str) => String(str).replace(/[^\t\n\f\r -~]/g, (ch) => {
   return '\\u' + ('0000' + esc).slice(-4)
 })
 
-const escapeValue = (str) => String(str)
+const escape = (str) => String(str)
   .replace(/\\/g, '\\\\')
-  .replace(/\r/g, '\\r')
+  .replace(/\f/g, '\\f')
   .replace(/\n/g, '\\n')
+  .replace(/\r/g, '\\r')
+  .replace(/\t/g, '\\t')
 
-const escapeKey = (str) => escapeValue(str).replace(/[ \t\f]/g, '\\$&')
+const escapeKey = (str) => escape(str).replace(/[ =:]/g, '\\$&')
+
+const escapeValue = (str) => escape(str).replace(/^ /, '\\ ')
 
 const getFold = ({ ascii, indent, lineWidth, newline }) => (line) => {
   if (!lineWidth || lineWidth < 0) return line
