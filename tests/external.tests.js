@@ -2,45 +2,45 @@ const fs = require('fs')
 const path = require('path')
 const { parse, stringify } = require('../index')
 
+function testCase ({ name, root, srcPath, tgtPath, options: { parsePath = false } = {} }) {
+  test(name, () => {
+    const src = fs.readFileSync(path.resolve(root, srcPath), 'utf8')
+    const tgt = fs.readFileSync(path.resolve(root, tgtPath), 'utf8')
+    const exp = JSON.parse(tgt)
+    const res = parse(src, parsePath)
+    expect(res).toMatchObject(exp)
+    const src2 = stringify(res)
+    const res2 = parse(src2, parsePath)
+    expect(res2).toMatchObject(exp)
+  })
+}
+
 describe('@js.properties', () => {
   const root = path.resolve(__dirname, '@js.properties')
   const tests = fs.readdirSync(root).filter(name => /\.properties$/.test(name))
-
   tests.forEach(name => {
-    test(name, () => {
-      const src = fs.readFileSync(path.resolve(root, name), 'utf8')
-      const tgt = fs.readFileSync(path.resolve(root, name + '.json'), 'utf8')
-      const exp = JSON.parse(tgt)
-      const res = parse(src)
-      expect(res).toMatchObject(exp)
-      const src2 = stringify(res)
-      const res2 = parse(src2)
-      expect(res2).toMatchObject(exp)
+    testCase({
+      name,
+      root,
+      srcPath: name,
+      tgtPath: name + '.json'
     })
   })
 
-  test('namespaced properties with path', () => {
-    const src = fs.readFileSync(path.resolve(root, 'namespaced.properties'), 'utf8')
-    const tgt = fs.readFileSync(path.resolve(root, 'namespaced.properties.namespaced.json'), 'utf8')
-    const exp = JSON.parse(tgt)
-    const res = parse(src, true)
-    expect(res).toMatchObject(exp)
-    const src2 = stringify(res)
-    const res2 = parse(src2, true)
-    expect(res2).toMatchObject(exp)
+  testCase({
+    name: 'namespaced properties with path',
+    root,
+    srcPath: 'namespaced.properties',
+    tgtPath: 'namespaced.properties.namespaced.json',
+    options: { parsePath: true }
   })
 })
 
 describe('node-properties-parser', () => {
-  const root = path.resolve(__dirname, 'node-properties-parser')
-  test('node-properties-parser', () => {
-    const src = fs.readFileSync(path.resolve(root, 'test.properties'), 'utf8')
-    const tgt = fs.readFileSync(path.resolve(root, 'test.json'), 'utf8')
-    const exp = JSON.parse(tgt)
-    const res = parse(src)
-    expect(res).toMatchObject(exp)
-    const src2 = stringify(res)
-    const res2 = parse(src2)
-    expect(res2).toMatchObject(exp)
+  testCase({
+    name: 'test',
+    root: path.resolve(__dirname, 'node-properties-parser'),
+    srcPath: 'test.properties',
+    tgtPath: 'test.json'
   })
 })
