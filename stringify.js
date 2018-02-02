@@ -59,7 +59,7 @@ const toLines = (obj, pathSep, defaultKey, prefix = '') => {
     if (value && typeof value === 'object') {
       return lines.concat(toLines(value, pathSep, defaultKey, prefix + key + pathSep))
     } else {
-      const k = key === defaultKey ? prefix.substr(0, -(pathSep.length)) : prefix + key
+      const k = key === defaultKey ? prefix.slice(0, -(pathSep.length)) : prefix + key
       lines.push([k, value])
       return lines
     }

@@ -18,6 +18,16 @@ describe('@js.properties', () => {
       expect(res2).toMatchObject(exp)
     })
   })
+  test('namespaced properties with path', () => {
+    const src = fs.readFileSync(path.resolve(root, 'namespaced.properties'), 'utf8')
+    const tgt = fs.readFileSync(path.resolve(root, 'namespaced.properties.namespaced.json'), 'utf8')
+    const exp = JSON.parse(tgt)
+    const res = parse(src, true)
+    expect(res).toMatchObject(exp)
+    const src2 = stringify(res)
+    const res2 = parse(src2, true)
+    expect(res2).toMatchObject(exp)
+  })
 })
 
 // This test has been extracted from the node-properties-parser project by Xavi Ramirez, at:
