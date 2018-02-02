@@ -1,0 +1,15 @@
+{
+  "name": "dot-properties",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Eemeli Aro <eemeli@gmail.com>",
+  "description": "Parse & stringify .properties files",
+  "keywords": [
+    "properties",
+    "java",
+    "resource",
+    "bundle",
+    "i18n"
+  ]
+}
