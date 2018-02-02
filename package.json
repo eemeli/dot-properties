@@ -11,5 +11,8 @@
     "resource",
     "bundle",
     "i18n"
-  ]
+  ],
+  "devDependencies": {
+    "jest": "^22.1.4"
+  }
 }
