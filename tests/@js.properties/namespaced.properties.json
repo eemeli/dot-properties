@@ -1,0 +1,9 @@
+{
+  "foo": "A.B.C",
+  "foo.bar": "abc",
+  "foo.baz": "def",
+  "qux.quux": "quuz",
+  "a.b1": "a.b1",
+  "a.b2.c1": "a.b2.c1",
+  "a.b2.c2": "a.b2.c2"
+}

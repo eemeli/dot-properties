@@ -1,0 +1,11 @@
+{
+  "a=b": "c=d=e",
+  "f:g": "h:i:j",
+  "k l": "m n o",
+  "f\to\to": "b\fa\fr",
+  "f\ro\ro": "b\na\nr",
+  "aabbccddeef\fgghhiijjkkllmmn\nooppqqr\rsst\tvvwwxxyyzz": "aabbccddeef\fgghhiijjkkllmmn\nooppqqr\rsst\tvvwwxxyyzz",
+  "uሴu": "u噸u",
+  "uꯍu": "u췯u",
+  "UUWXYZU": "UUghijU"
+}

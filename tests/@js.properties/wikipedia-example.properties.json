@@ -1,0 +1,8 @@
+{
+  "website": "https://en.wikipedia.org/",
+  "language": "English",
+  "message": "Welcome to Wikipedia!",
+  "key with spaces": "This is the value that could be looked up with the key \"key with spaces\".",
+  "tab": "\t",
+  "path": "c:\\wiki\\templates"
+}

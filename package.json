@@ -12,6 +12,12 @@
     "bundle",
     "i18n"
   ],
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testMatch": ["**/tests/*.js"]
+  },
   "devDependencies": {
     "jest": "^22.1.4"
   }
