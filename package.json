@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "author": "Eemeli Aro <eemeli@gmail.com>",
+  "repository": "github:eemeli/dot-properties",
   "description": "Parse & stringify .properties files",
   "keywords": [
     "properties",
