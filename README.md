@@ -1,15 +1,50 @@
 # dot-properties
 
-JavaScript `parse()` and `stringify()` for `.properties` (`text/x-java-properties`) files as defined in[java.util.Properties](https://docs.oracle.com/javase/9/docs/api/java/util/Properties.html#load-java.io.Reader-).
+JavaScript `parse()` and `stringify()` for `.properties` (`text/x-java-properties`) files as defined in [java.util.Properties](https://docs.oracle.com/javase/9/docs/api/java/util/Properties.html#load-java.io.Reader-).
 
 To install:
 ```
 npm install dot-properties
 ```
 
+For usage examples, see [below](#below) or take a look through the project's [test suite](tests/).
+
+## API
+
+### `parse(src[, path])`
+Parses an input string read from a .properties file into a JavaScript Object
+
+If the second `path` parameter is true, dots `.` in keys will result in a multi-level object (use a string value to customise). If a parent level is directly assigned a value while it also has a child with an assigned value, the parent value will be assigned to its empty string `''` key. Repeated keys will take the last assigned value. Key order is not guaranteed, but is likely to match the order of the input lines.
+
+### `parseLines(src)`
+Splits the input string into an array of logical lines; useful if you want to preserve order, comments and/or empty lines while processing. Used internally by `parse()`.
+
+Key-value pairs are `[key, value]` arrays with string values. Escape sequences in keys and values are parsed. Empty lines are included as empty strings `''`, and comments as strings that start with `#` or `!` characters. Leading whitespace is not included.
+
+
+### `stringify(input[, options])`
+Stringifies a hierarchical object or an array of lines to `.properties` format
+
+If `input` is a hierarchical object, keys will consist of the path parts joined by `.` characters. With array input, string values represent blank or comment lines and string arrays are `[key, value]` pairs. The characters `\`, `\n` and `\r` will be appropriately escaped. If the `ascii` option is true, all non-ASCII-printable characters will also be `\u` escaped.
+
+Output styling is controlled by the second (optional) `options` parameter; by default a spaced `=` separates the key from the value, `\n` is the newline separator, lines are folded at 80 characters (at most, splitting at nice places), with subsequent lines indented by four spaces, and comment lines are prefixed with a `#`. `''` as a key value is considered the default, and set as the value of a key corresponding to its parent object's path:
+```js
+const defaultOptions = {
+  ascii: false,         // control chars are always escaped
+  commentPrefix: '# ',  // could also use e.g. '!'
+  defaultKey: '',       // YAML tends to use '='
+  indent: '    ',       // tabs are also valid
+  keySep: ' = ',        // should have at most one = or :
+  lineWidth: 80,        // use null to disable
+  newline: '\n',        // Windows uses \r\n
+  pathSep: '.'          // if non-default, use the same in parse()
+}
+```
+
 ## Example
 
 ### `example.properties`
+Source: [Wikipedia](https://en.wikipedia.org/wiki/.properties)
 ```
 # You are reading the ".properties" entry.
 ! The exclamation mark can also mark text as comments.
@@ -32,7 +67,6 @@ tab : \u0009
 path c:\\wiki\\templates
 # However, some editors will handle this automatically
 ```
-Source: [Wikipedia](https://en.wikipedia.org/wiki/.properties)
 
 ### `example.js`
 ```js
@@ -72,36 +106,4 @@ SLICE:
 # The backslash below tells the application to continue reading
 # the value onto the next line.
 message = Welcome to Wikipedia!
-```
-
-## API
-
-### `parse(src[, path])`
-Parses an input string read from a .properties file into a JavaScript Object
-
-If the second `path` parameter is true, dots `.` in keys will result in a multi-level object (use a string value to customise). If a parent level is directly assigned a value while it also has a child with an assigned value, the parent value will be assigned to its empty string `''` key. Repeated keys will take the last assigned value. Key order is not guaranteed, but is likely to match the order of the input lines.
-
-### `parseLines(src)`
-Splits the input string into an array of logical lines; useful if you want to preserve comments and empty lines while processing.
-
-Key-value pairs are `[key, value]` arrays with string values. Escape sequences in keys and values are parsed. Empty lines are included as empty strings, and comments as strings that start with `#` or `!` characters. Leading whitespace is not included.
-
-
-### `stringify(input[, options])`
-Stringifies a hierarchical object or an array of lines to `.properties` format
-
-If `input` is a hierarchical object, keys will consist of the path parts joined by `.` characters. With array input, string values represent blank or comment lines and string arrays are `[key, value]` pairs. The characters `\`, `\n` and `\r` will be appropriately escaped. If the `ascii` option is true, all non-ASCII-printable characters will also be `\u` escaped.
-
-Output styling is controlled by the second (optional) `options` parameter; by default a spaced `=` separates the key from the value, `\n` is the newline separator, lines are folded at 80 characters (at most, splitting at nice places), with subsequent lines indented by four spaces, and comment lines are prefixed with a `#`. `''` as a key value is considered the default, and set as the value of a key corresponding to its parent object's path:
-```js
-const defaultOptions = {
-  ascii: false,         // control chars are always escaped
-  commentPrefix: '# ',  // could also use e.g. '!'
-  defaultKey: '',       // YAML tends to use '='
-  indent: '    ',       // tabs are also valid
-  keySep: ' = ',        // should have at most one = or :
-  lineWidth: 80,        // use null to disable
-  newline: '\n',        // Windows uses \r\n
-  pathSep: '.'          // if non-default, use the same in parse()
-}
 ```
