@@ -7,7 +7,7 @@ To install:
 npm install dot-properties
 ```
 
-For usage examples, see [below](#below) or take a look through the project's [test suite](tests/).
+For usage examples, see [below](#example) or take a look through the project's [test suite](tests/).
 
 ## API
 
@@ -21,18 +21,17 @@ Splits the input string into an array of logical lines; useful if you want to pr
 
 Key-value pairs are `[key, value]` arrays with string values. Escape sequences in keys and values are parsed. Empty lines are included as empty strings `''`, and comments as strings that start with `#` or `!` characters. Leading whitespace is not included.
 
-
 ### `stringify(input[, options])`
 Stringifies a hierarchical object or an array of lines to `.properties` format
 
-If `input` is a hierarchical object, keys will consist of the path parts joined by `.` characters. With array input, string values represent blank or comment lines and string arrays are `[key, value]` pairs. The characters `\`, `\n` and `\r` will be appropriately escaped. If the `ascii` option is true, all non-ASCII-printable characters will also be `\u` escaped.
+If `input` is a hierarchical object, keys will consist of the path parts joined by `.` characters. With array input, string values represent blank or comment lines and string arrays are `[key, value]` pairs. Control characters and `\` will be appropriately escaped. If the `ascii` option is true, all non-ASCII characters will also be `\u` escaped.
 
 Output styling is controlled by the second (optional) `options` parameter; by default a spaced `=` separates the key from the value, `\n` is the newline separator, lines are folded at 80 characters (at most, splitting at nice places), with subsequent lines indented by four spaces, and comment lines are prefixed with a `#`. `''` as a key value is considered the default, and set as the value of a key corresponding to its parent object's path:
 ```js
 const defaultOptions = {
   ascii: false,         // control chars are always escaped
   commentPrefix: '# ',  // could also use e.g. '!'
-  defaultKey: '',       // YAML tends to use '='
+  defaultKey: '',       // YAML uses '='
   indent: '    ',       // tabs are also valid
   keySep: ' = ',        // should have at most one = or :
   lineWidth: 80,        // use null to disable
@@ -44,7 +43,6 @@ const defaultOptions = {
 ## Example
 
 ### `example.properties`
-Source: [Wikipedia](https://en.wikipedia.org/wiki/.properties)
 ```
 # You are reading the ".properties" entry.
 ! The exclamation mark can also mark text as comments.
@@ -67,6 +65,7 @@ tab : \u0009
 path c:\\wiki\\templates
 # However, some editors will handle this automatically
 ```
+_Source: [Wikipedia](https://en.wikipedia.org/wiki/.properties)_
 
 ### `example.js`
 ```js
@@ -87,7 +86,7 @@ const str2 = stringify(lines.slice(7, 10))
 console.log(`SLICE:\n${str2}\n`)
 ```
 
-### Output
+### Console output
 ```
 PATH: c:\wiki\templates
 
