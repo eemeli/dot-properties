@@ -36,6 +36,15 @@ test('write lines', () => {
   expect(parseLines(fix)).toMatchObject(exp)
 })
 
+test('ascii', () => {
+  const src = 'ipsum áá éé lore\0'
+  const exp = 'ipsum \\u00e1\\u00e1 \\u00e9\\u00e9 lore\\u0000'
+  const res0 = stringify([['', src]], { keySep: '' })
+  const res1 = stringify([['', src]], { ascii: true, keySep: '' })
+  expect(res0).toBe(src.slice(0, -1) + '\\u0000')
+  expect(res1).toBe(exp)
+})
+
 test('\\\\ overdose', () => {
   const slash = '\\'.repeat(20)
   expect(() => stringify([[slash + slash]])).toThrow('Your input is \\\\silly\\\\.')

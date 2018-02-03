@@ -1,7 +1,10 @@
-const escapeNonAscii = (str) => String(str).replace(/[^\t\n\f\r -~]/g, (ch) => {
-  const esc = ch.charCodeAt(0).toString(16)
-  return '\\u' + ('0000' + esc).slice(-4)
-})
+const escapeNonPrintable = (str, ascii) => {
+  const re = ascii ? /[^\t\n\f\r -~]/g : /[\0-\b\v\x0e-\x1f]/g
+  return String(str).replace(re, (ch) => {
+    const esc = ch.charCodeAt(0).toString(16)
+    return '\\u' + ('0000' + esc).slice(-4)
+  })
+}
 
 const escape = (str) => String(str)
   .replace(/\\/g, '\\\\')
@@ -16,7 +19,7 @@ const escapeValue = (str) => escape(str).replace(/^ /, '\\ ')
 
 const getFold = ({ ascii, indent, lineWidth, newline }) => (line) => {
   if (!lineWidth || lineWidth < 0) return line
-  if (ascii) line = escapeNonAscii(line)
+  line = escapeNonPrintable(line, ascii)
   let start = 0
   loop: while (line.length - start > lineWidth) {
     for (let i = 0; i <= lineWidth; ++i) {
