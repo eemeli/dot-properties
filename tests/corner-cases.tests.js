@@ -46,7 +46,20 @@ test('ascii', () => {
 })
 
 test('\\\\ overdose', () => {
-  const slash = '\\'.repeat(20)
-  expect(() => stringify([[slash + slash]])).toThrow('Your input is \\\\silly\\\\.')
-  expect(() => stringify([[slash, slash]])).not.toThrow()
+  const slash = '\\'.repeat(200)
+  expect(() => stringify([[slash + slash]])).not.toThrow()
+})
+
+test('manual line breaks', () => {
+  const lorem = `\r
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed\r
+do eiusmod tempor incididunt ut labore et dolore magna\r
+aliqua. Ut enim ad minim veniam, quis nostrud exercitation\r
+ullamco laboris nisi ut aliquip ex ea commodo consequat.\r
+Duis aute irure dolor in reprehenderit in voluptate velit\r
+esse cillum dolore eu fugiat nulla pariatur. Excepteur sint\r
+occaecat cupidatat non proident, sunt in culpa qui officia\r
+deserunt mollit anim id est laborum.`
+  expect(stringify([lorem])).toBe(lorem.replace(/\r\n/gm, '\n# ').trim())
+  expect(stringify([['key', lorem]])).toBe('key = ' + lorem.replace(/\r\n/g, '\\r\\n\\\n    '))
 })

@@ -21,39 +21,57 @@ const getFold = ({ ascii, indent, lineWidth, newline }) => (line) => {
   if (!lineWidth || lineWidth < 0) return line
   line = escapeNonPrintable(line, ascii)
   let start = 0
-  loop: while (line.length - start > lineWidth) {
-    for (let i = 0; i <= lineWidth; ++i) {
-      const ch = line[start + i]
-      if (ch === '\r' || ch === '\n') {
-        start += i + 1
-        break loop
+  let split = undefined
+  for (let i = 0, ch = line[0]; ch; ch = line[i += 1]) {
+    let end = i - start >= lineWidth ? split || i : undefined
+    if (!end) {
+      switch (ch) {
+        case '\r':
+          if (line[i + 1] === '\n') i += 1
+          // fallthrough
+        case '\n':
+          end = i + 1
+          break
+        case '\\':
+          i += 1
+          switch (line[i]) {
+            case 'r':
+              if (line[i + 1] === '\\' && line[i + 2] === 'n') i += 2
+              // fallthrough
+            case 'n':
+              end = i + 1
+              break
+            case ' ':
+            case 'f':
+            case 't':
+              split = i + 1
+              break
+          }
+          break
+        case '\f':
+        case '\t':
+        case ' ':
+        case '.':
+          split = i + 1
+          break
       }
     }
-    let end = start + lineWidth
-    let ch = line[end - 1]
-    while (end > start && ch !== '\t' && ch !== '\f' && ch !== ' ' && ch !== '.') {
-      end -= 1
-      ch = line[end - 1]
+    if (end) {
+      let lineEnd = end
+      let ch = line[lineEnd - 1]
+      while (ch === '\n' || ch === '\r') {
+        lineEnd -= 1
+        ch = line[lineEnd - 1]
+      }
+      const next = line[end]
+      const atWhitespace = (next === '\t' || next === '\f' || next === ' ')
+      line = line.slice(0, lineEnd) + newline + indent + (atWhitespace ? '\\' : '') + line.slice(end)
+      start = lineEnd + newline.length
+      split = undefined
+      i = start + indent.length - 1
     }
-    if (end === start) {
-      end = start + lineWidth
-      while (line[end - 1] === '\\') end -= 1
-      if (end <= start) throw new Error('Your input is \\\\silly\\\\.')
-    }
-    ch = line[end]
-    const atWhitespace = (ch === '\t' || ch === '\f' || ch === ' ')
-    line = line.slice(0, end) + '\\' + newline + indent + (atWhitespace ? '\\' : '') + line.slice(end)
-    start = end + 1 + newline.length
   }
   return line
-}
-
-const toComment = (line, newline, prefix) => {
-  if (!line) return ''
-  line = String(line)
-    .replace(/^\s*([#!][ \t\f]*)?/g, '')
-    .replace(/\r?\n/g, newline + prefix)
-  return line ? prefix + line : ''
 }
 
 const toLines = (obj, pathSep, defaultKey, prefix = '') => {
@@ -108,13 +126,13 @@ function stringify (input, {
 } = {}) {
   if (!input) return ''
   if (!Array.isArray(input)) input = toLines(input, pathSep, defaultKey)
-  const foldLine = getFold({ ascii, indent, lineWidth, newline })
+  const foldLine = getFold({ ascii, indent, lineWidth, newline: '\\' + newline })
   const foldComment = getFold({ ascii, indent: commentPrefix, lineWidth, newline })
   return input
     .map(line => Array.isArray(line) ? (
       foldLine(escapeKey(line[0]) + keySep + escapeValue(line[1]))
     ) : (
-      foldComment(toComment(line, newline, commentPrefix))
+      foldComment(String(line || '').replace(/^\s*([#!][ \t\f]*)?/g, commentPrefix))
     ))
     .join(newline)
 }
