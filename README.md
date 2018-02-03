@@ -70,7 +70,7 @@ _Source: [Wikipedia](https://en.wikipedia.org/wiki/.properties)_
 ### `example.js`
 ```js
 const fs = require('fs')
-const { parse, parseLines, stringify } = require('..')
+const { parse, parseLines, stringify } = require('dot-properties')
 
 const src = fs.readFileSync('./example.properties', 'utf8')
 const obj = parse(src)
