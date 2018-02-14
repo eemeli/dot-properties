@@ -39,12 +39,12 @@ describe('lines', () => {
 
 describe('stringify', () => {
   test('ascii', () => {
-    const src = 'ipsum áá éé lore\0'
-    const exp = 'ipsum \\u00e1\\u00e1 \\u00e9\\u00e9 lore\\u0000'
+    const src = 'ipsum áé ĐѺ lore\0'
+    const exp = 'ipsum áé \\u0110\\u047a lore\\u0000'
     const res0 = stringify([['', src]], { keySep: '' })
-    const res1 = stringify([['', src]], { ascii: true, keySep: '' })
-    expect(res0).toBe(src.slice(0, -1) + '\\u0000')
-    expect(res1).toBe(exp)
+    const res1 = stringify([['', src]], { latin1: false, keySep: '' })
+    expect(res0).toBe(exp)
+    expect(res1).toBe(src.slice(0, -1) + '\\u0000')
   })
 
   test('\\\\ overdose', () => {

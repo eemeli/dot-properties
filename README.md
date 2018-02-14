@@ -24,16 +24,16 @@ Key-value pairs are `[key, value]` arrays with string values. Escape sequences i
 ### `stringify(input[, options])`
 Stringifies a hierarchical object or an array of lines to `.properties` format
 
-If `input` is a hierarchical object, keys will consist of the path parts joined by `.` characters. With array input, string values represent blank or comment lines and string arrays are `[key, value]` pairs. Control characters and `\` will be appropriately escaped. If the `ascii` option is true, all non-ASCII characters will also be `\u` escaped.
+If `input` is a hierarchical object, keys will consist of the path parts joined by `.` characters. With array input, string values represent blank or comment lines and string arrays are `[key, value]` pairs. Control characters and `\` will be appropriately escaped. If the `latin1` option is not set to false, all non-Latin-1 characters will also be `\u` escaped.
 
 Output styling is controlled by the second (optional) `options` parameter; by default a spaced `=` separates the key from the value, `\n` is the newline separator, lines are folded at 80 characters (at most, splitting at nice places), with subsequent lines indented by four spaces, and comment lines are prefixed with a `#`. `''` as a key value is considered the default, and set as the value of a key corresponding to its parent object's path:
 ```js
 const defaultOptions = {
-  ascii: false,         // control chars are always escaped
   commentPrefix: '# ',  // could also use e.g. '!'
   defaultKey: '',       // YAML uses '='
   indent: '    ',       // tabs are also valid
   keySep: ' = ',        // should have at most one = or :
+  latin1: true,         // default encoding for .properties files
   lineWidth: 80,        // use null to disable
   newline: '\n',        // Windows uses \r\n
   pathSep: '.'          // if non-default, use the same in parse()

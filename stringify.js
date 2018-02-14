@@ -1,5 +1,5 @@
-const escapeNonPrintable = (str, ascii) => {
-  const re = ascii ? /[^\t\n\f\r -~]/g : /[\0-\b\v\x0e-\x1f]/g
+const escapeNonPrintable = (str, latin1) => {
+  const re = latin1 !== false ? /[^\t\n\f\r -~\xa1-\xff]/g : /[\0-\b\v\x0e-\x1f]/g
   return String(str).replace(re, (ch) => {
     const esc = ch.charCodeAt(0).toString(16)
     return '\\u' + ('0000' + esc).slice(-4)
@@ -17,9 +17,9 @@ const escapeKey = (str) => escape(str).replace(/[ =:]/g, '\\$&')
 
 const escapeValue = (str) => escape(str).replace(/^ /, '\\ ')
 
-const getFold = ({ ascii, indent, lineWidth, newline }) => (line) => {
+const getFold = ({ indent, latin1, lineWidth, newline }) => (line) => {
   if (!lineWidth || lineWidth < 0) return line
-  line = escapeNonPrintable(line, ascii)
+  line = escapeNonPrintable(line, latin1)
   let start = 0
   let split = undefined
   for (let i = 0, ch = line[0]; ch; ch = line[i += 1]) {
@@ -93,8 +93,8 @@ const toLines = (obj, pathSep, defaultKey, prefix = '') => {
  * If the input is a hierarchical object, keys will consist of the path parts
  * joined by '.' characters. With array input, string values represent blank or
  * comment lines and string arrays are [key, value] pairs. The characters \, \n
- * and \r will be appropriately escaped. If the ascii option is true, all
- * non-ASCII-printable characters will also be \u escaped.
+ * and \r will be appropriately escaped. If the `latin1` option is not set to
+ * false, all non-Latin-1 characters will also be `\u` escaped.
  *
  * Output styling is controlled by the second options parameter; by default a
  * spaced '=' separates the key from the value, '\n' is the newline separator,
@@ -105,29 +105,29 @@ const toLines = (obj, pathSep, defaultKey, prefix = '') => {
  *
  * @param {Object | Array<string | string[]>} input
  * @param {Object} [options={}]
- * @param {boolean} [options.ascii=false]
  * @param {string} [options.commentPrefix='# ']
  * @param {string} [options.defaultKey='']
  * @param {string} [options.indent='    ']
  * @param {string} [options.keySep=' = ']
+ * @param {boolean} [options.latin1=true]
  * @param {number} [options.lineWidth=80]
  * @param {string} [options.newline='\n']
  * @param {string} [options.pathSep='.']
  */
 function stringify (input, {
-  ascii = false,
   commentPrefix = '# ',
   defaultKey = '',
   indent = '    ',
   keySep = ' = ',
+  latin1 = true,
   lineWidth = 80,
   newline = '\n',
   pathSep = '.'
 } = {}) {
   if (!input) return ''
   if (!Array.isArray(input)) input = toLines(input, pathSep, defaultKey)
-  const foldLine = getFold({ ascii, indent, lineWidth, newline: '\\' + newline })
-  const foldComment = getFold({ ascii, indent: commentPrefix, lineWidth, newline })
+  const foldLine = getFold({ indent, latin1, lineWidth, newline: '\\' + newline })
+  const foldComment = getFold({ indent: commentPrefix, latin1, lineWidth, newline })
   return input
     .map(line => Array.isArray(line) ? (
       foldLine(escapeKey(line[0]) + keySep + escapeValue(line[1]))
