@@ -132,7 +132,7 @@ function stringify (input, {
     .map(line => Array.isArray(line) ? (
       foldLine(escapeKey(line[0]) + keySep + escapeValue(line[1]))
     ) : (
-      foldComment(String(line || '').replace(/^\s*([#!][ \t\f]*)?/g, commentPrefix))
+      line === '' ? line : foldComment(String(line || '').replace(/^\s*([#!][ \t\f]*)?/g, commentPrefix))
     ))
     .join(newline)
 }
