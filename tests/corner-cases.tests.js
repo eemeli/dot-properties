@@ -65,6 +65,13 @@ deserunt mollit anim id est laborum.`
     expect(stringify([lorem])).toBe(lorem.replace(/\r\n/gm, '\n# ').trim())
     expect(stringify([['key', lorem]])).toBe('key = ' + lorem.replace(/\r\n/g, '\\r\\n\\\n    '))
   })
+
+  test('lines with empty strings result in blank lines', () => {
+    const emptyLine = ''
+    expect(stringify([emptyLine])).toBe(emptyLine)
+    const lines = [['key1', 'value1'], '', ['key2', 'value2']];
+    expect(stringify(lines)).toBe('key1 = value1\n\nkey2 = value2')
+  })
 })
 
 describe('default values', () => {
