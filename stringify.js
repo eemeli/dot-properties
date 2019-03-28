@@ -129,11 +129,19 @@ function stringify (input, {
   const foldLine = getFold({ indent, latin1, lineWidth, newline: '\\' + newline })
   const foldComment = getFold({ indent: commentPrefix, latin1, lineWidth, newline })
   return input
-    .map(line => Array.isArray(line) ? (
-      foldLine(escapeKey(line[0]) + keySep + escapeValue(line[1]))
-    ) : (
-      line === '' ? line : foldComment(String(line || '').replace(/^\s*([#!][ \t\f]*)?/g, commentPrefix))
-    ))
+    .map(line => {
+      switch (true) {
+        case !line:
+          return ''
+        case Array.isArray(line):
+          const key = escapeKey(line[0])
+          const value = escapeValue(line[1])
+          return foldLine(key + keySep + value)
+        default:
+          const cc = String(line).replace(/^\s*([#!][ \t\f]*)?/g, commentPrefix)
+          return foldComment(cc)
+      }
+    })
     .join(newline)
 }
 

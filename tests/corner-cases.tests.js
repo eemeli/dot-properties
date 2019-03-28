@@ -72,6 +72,11 @@ deserunt mollit anim id est laborum.`
     const lines = [['key1', 'value1'], '', ['key2', 'value2']];
     expect(stringify(lines)).toBe('key1 = value1\n\nkey2 = value2')
   })
+
+  test('empty comments', () => {
+    const lines = [['key1', 'value1'], '#', '! ', ['key2', 'value2']];
+    expect(stringify(lines)).toBe('key1 = value1\n# \n# \nkey2 = value2')
+  })
 })
 
 describe('default values', () => {
