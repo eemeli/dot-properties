@@ -13,6 +13,9 @@
     "bundle",
     "i18n"
   ],
+  "files": [
+    "*.js"
+  ],
   "scripts": {
     "test": "jest"
   },
