@@ -54,11 +54,11 @@ language = English
 
 # The backslash below tells the application to continue reading
 # the value onto the next line.
-message = Welcome to \\
+message = Welcome to \
           Wikipedia!
 
 # Add spaces to the key
-key\\ with\\ spaces = This is the value that could be looked up with \\
+key\ with\ spaces = This is the value that could be looked up with \
                     the key "key with spaces".
 
 # Unicode
