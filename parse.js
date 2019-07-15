@@ -107,7 +107,7 @@ const unescape = (str) => str.replace(/\\(u[0-9a-fA-F]{4}|\r?\n[ \t\f]*|.)?/g, (
  */
 function parseLines (src) {
   const lines = []
-  for (i = 0; i < src.length; ++i) {
+  for (let i = 0; i < src.length; ++i) {
     if (src[i] === '\n' && src[i - 1] === '\r') i += 1
     if (!src[i]) break
     const keyStart = endOfIndent(src, i)
