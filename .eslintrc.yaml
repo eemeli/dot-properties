@@ -1,0 +1,18 @@
+root: true
+
+env:
+  es6: true
+  node: true
+
+extends:
+  - eslint:recommended
+  - plugin:prettier/recommended
+
+rules:
+  no-control-regex: 0
+
+overrides:
+  - files:
+      - tests/*.js
+    env:
+      jest: true
