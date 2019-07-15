@@ -101,9 +101,10 @@ const unescape = str =>
         return '\r'
       case 't':
         return '\t'
-      case 'u':
+      case 'u': {
         const c = parseInt(code.substr(1), 16)
         return isNaN(c) ? code : String.fromCharCode(c)
+      }
       case '\r':
       case '\n':
       case undefined:

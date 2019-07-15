@@ -156,13 +156,15 @@ function stringify(
       switch (true) {
         case !line:
           return ''
-        case Array.isArray(line):
+        case Array.isArray(line): {
           const key = escapeKey(line[0])
           const value = escapeValue(line[1])
           return foldLine(key + keySep + value)
-        default:
+        }
+        default: {
           const cc = String(line).replace(/^\s*([#!][ \t\f]*)?/g, commentPrefix)
           return foldComment(cc)
+        }
       }
     })
     .join(newline)
