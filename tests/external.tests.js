@@ -2,7 +2,13 @@ const fs = require('fs')
 const path = require('path')
 const { parse, stringify } = require('../index')
 
-function testCase ({ name, root, srcPath, tgtPath, options: { parsePath = false } = {} }) {
+function testCase({
+  name,
+  root,
+  srcPath,
+  tgtPath,
+  options: { parsePath = false } = {}
+}) {
   test(name, () => {
     const src = fs.readFileSync(path.resolve(root, srcPath), 'utf8')
     const tgt = fs.readFileSync(path.resolve(root, tgtPath), 'utf8')

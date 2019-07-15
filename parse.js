@@ -28,7 +28,16 @@ const endOfComment = (src, offset) => {
 
 const endOfKey = (src, offset) => {
   let ch = src[offset]
-  while (ch && ch !== '\r' && ch !== '\n' && ch !== '\t' && ch !== '\f' && ch !== ' ' && ch !== ':' && ch !== '=') {
+  while (
+    ch &&
+    ch !== '\r' &&
+    ch !== '\n' &&
+    ch !== '\t' &&
+    ch !== '\f' &&
+    ch !== ' ' &&
+    ch !== ':' &&
+    ch !== '='
+  ) {
     if (ch === '\\') {
       if (src[offset + 1] === '\n') {
         offset = endOfIndent(src, offset + 2)
@@ -46,7 +55,14 @@ const endOfKey = (src, offset) => {
 const endOfSeparator = (src, offset) => {
   let ch = src[offset]
   let hasEqSign = false
-  loop: while (ch === '\t' || ch === '\f' || ch === ' ' || ch === '=' || ch === ':' || ch === '\\') {
+  loop: while (
+    ch === '\t' ||
+    ch === '\f' ||
+    ch === ' ' ||
+    ch === '=' ||
+    ch === ':' ||
+    ch === '\\'
+  ) {
     switch (ch) {
       case '\\':
         if (src[offset + 1] !== '\n') break loop
@@ -56,7 +72,7 @@ const endOfSeparator = (src, offset) => {
       case ':':
         if (hasEqSign) break loop
         hasEqSign = true
-        // fallthrough
+      // fallthrough
       default:
         offset += 1
     }
@@ -74,23 +90,28 @@ const endOfValue = (src, offset) => {
   return offset
 }
 
-const unescape = (str) => str.replace(/\\(u[0-9a-fA-F]{4}|\r?\n[ \t\f]*|.)?/g, (match, code) => {
-  switch (code && code[0]) {
-    case 'f': return '\f'
-    case 'n': return '\n'
-    case 'r': return '\r'
-    case 't': return '\t'
-    case 'u':
-      const c = parseInt(code.substr(1), 16)
-      return isNaN(c) ? code : String.fromCharCode(c)
-    case '\r':
-    case '\n':
-    case undefined:
-      return ''
-    default:
-      return code
-  }
-})
+const unescape = str =>
+  str.replace(/\\(u[0-9a-fA-F]{4}|\r?\n[ \t\f]*|.)?/g, (match, code) => {
+    switch (code && code[0]) {
+      case 'f':
+        return '\f'
+      case 'n':
+        return '\n'
+      case 'r':
+        return '\r'
+      case 't':
+        return '\t'
+      case 'u':
+        const c = parseInt(code.substr(1), 16)
+        return isNaN(c) ? code : String.fromCharCode(c)
+      case '\r':
+      case '\n':
+      case undefined:
+        return ''
+      default:
+        return code
+    }
+  })
 
 /**
  * Splits the input string into an array of logical lines
@@ -105,7 +126,7 @@ const unescape = (str) => str.replace(/\\(u[0-9a-fA-F]{4}|\r?\n[ \t\f]*|.)?/g, (
  * @param {string} src
  * @returns Array<string | string[]]>
  */
-function parseLines (src) {
+function parseLines(src) {
   const lines = []
   for (let i = 0; i < src.length; ++i) {
     if (src[i] === '\n' && src[i - 1] === '\r') i += 1
@@ -151,7 +172,7 @@ function parseLines (src) {
  * @param {string} src
  * @param {boolean | string} [path=false]
  */
-function parse (src, path) {
+function parse(src, path) {
   const pathSep = typeof path === 'string' ? path : '.'
   return parseLines(src).reduce((res, line) => {
     if (Array.isArray(line)) {

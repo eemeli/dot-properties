@@ -3,7 +3,11 @@ const path = require('path')
 const { parse, parseLines, stringify } = require('../index')
 
 describe('lines', () => {
-  const srcPath = path.resolve(__dirname, 'node-properties-parser', 'test.properties')
+  const srcPath = path.resolve(
+    __dirname,
+    'node-properties-parser',
+    'test.properties'
+  )
   const src = fs.readFileSync(srcPath, 'utf8')
   const exp = [
     '# You are reading the ".properties" entry.',
@@ -15,7 +19,10 @@ describe('lines', () => {
     '# the value onto the next line.',
     ['message', 'Welcome to Wikipedia!'],
     '# Add spaces to the key',
-    ['key with spaces', 'This is the value that could be looked up with the key "key with spaces".'],
+    [
+      'key with spaces',
+      'This is the value that could be looked up with the key "key with spaces".'
+    ],
     '# Unicode',
     ['tab', '\u0009'],
     ['long-unicode', '\u00000009'],
@@ -63,18 +70,20 @@ esse cillum dolore eu fugiat nulla pariatur. Excepteur sint\r
 occaecat cupidatat non proident, sunt in culpa qui officia\r
 deserunt mollit anim id est laborum.`
     expect(stringify([lorem])).toBe(lorem.replace(/\r\n/gm, '\n# ').trim())
-    expect(stringify([['key', lorem]])).toBe('key = ' + lorem.replace(/\r\n/g, '\\r\\n\\\n    '))
+    expect(stringify([['key', lorem]])).toBe(
+      'key = ' + lorem.replace(/\r\n/g, '\\r\\n\\\n    ')
+    )
   })
 
   test('lines with empty strings result in blank lines', () => {
     const emptyLine = ''
     expect(stringify([emptyLine])).toBe(emptyLine)
-    const lines = [['key1', 'value1'], '', ['key2', 'value2']];
+    const lines = [['key1', 'value1'], '', ['key2', 'value2']]
     expect(stringify(lines)).toBe('key1 = value1\n\nkey2 = value2')
   })
 
   test('empty comments', () => {
-    const lines = [['key1', 'value1'], '#', '! ', ['key2', 'value2']];
+    const lines = [['key1', 'value1'], '#', '! ', ['key2', 'value2']]
     expect(stringify(lines)).toBe('key1 = value1\n# \n# \nkey2 = value2')
   })
 })
@@ -87,8 +96,7 @@ describe('default values', () => {
   }
 
   test('read default values', () => {
-    const src =
-`:root
+    const src = `:root
 a:A
 a.:A.
 a.a:A.A
@@ -97,9 +105,8 @@ b:B`
     expect(parse(src, true)).toMatchObject(obj)
   })
 
-test('write default values', () => {
-  const src =
-`:root
+  test('write default values', () => {
+    const src = `:root
 a:A.
 a.a:A.A
 b:B

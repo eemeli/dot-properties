@@ -1,34 +1,36 @@
 const escapeNonPrintable = (str, latin1) => {
-  const re = latin1 !== false ? /[^\t\n\f\r -~\xa1-\xff]/g : /[\0-\b\v\x0e-\x1f]/g
-  return String(str).replace(re, (ch) => {
+  const re =
+    latin1 !== false ? /[^\t\n\f\r -~\xa1-\xff]/g : /[\0-\b\v\x0e-\x1f]/g
+  return String(str).replace(re, ch => {
     const esc = ch.charCodeAt(0).toString(16)
     return '\\u' + ('0000' + esc).slice(-4)
   })
 }
 
-const escape = (str) => String(str)
-  .replace(/\\/g, '\\\\')
-  .replace(/\f/g, '\\f')
-  .replace(/\n/g, '\\n')
-  .replace(/\r/g, '\\r')
-  .replace(/\t/g, '\\t')
+const escape = str =>
+  String(str)
+    .replace(/\\/g, '\\\\')
+    .replace(/\f/g, '\\f')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t')
 
-const escapeKey = (str) => escape(str).replace(/[ =:]/g, '\\$&')
+const escapeKey = str => escape(str).replace(/[ =:]/g, '\\$&')
 
-const escapeValue = (str) => escape(str).replace(/^ /, '\\ ')
+const escapeValue = str => escape(str).replace(/^ /, '\\ ')
 
-const getFold = ({ indent, latin1, lineWidth, newline }) => (line) => {
+const getFold = ({ indent, latin1, lineWidth, newline }) => line => {
   if (!lineWidth || lineWidth < 0) return line
   line = escapeNonPrintable(line, latin1)
   let start = 0
   let split = undefined
-  for (let i = 0, ch = line[0]; ch; ch = line[i += 1]) {
+  for (let i = 0, ch = line[0]; ch; ch = line[(i += 1)]) {
     let end = i - start >= lineWidth ? split || i : undefined
     if (!end) {
       switch (ch) {
         case '\r':
           if (line[i + 1] === '\n') i += 1
-          // fallthrough
+        // fallthrough
         case '\n':
           end = i + 1
           break
@@ -37,7 +39,7 @@ const getFold = ({ indent, latin1, lineWidth, newline }) => (line) => {
           switch (line[i]) {
             case 'r':
               if (line[i + 1] === '\\' && line[i + 2] === 'n') i += 2
-              // fallthrough
+            // fallthrough
             case 'n':
               end = i + 1
               break
@@ -64,8 +66,13 @@ const getFold = ({ indent, latin1, lineWidth, newline }) => (line) => {
         ch = line[lineEnd - 1]
       }
       const next = line[end]
-      const atWhitespace = (next === '\t' || next === '\f' || next === ' ')
-      line = line.slice(0, lineEnd) + newline + indent + (atWhitespace ? '\\' : '') + line.slice(end)
+      const atWhitespace = next === '\t' || next === '\f' || next === ' '
+      line =
+        line.slice(0, lineEnd) +
+        newline +
+        indent +
+        (atWhitespace ? '\\' : '') +
+        line.slice(end)
       start = lineEnd + newline.length
       split = undefined
       i = start + indent.length - 1
@@ -78,9 +85,12 @@ const toLines = (obj, pathSep, defaultKey, prefix = '') => {
   return Object.keys(obj).reduce((lines, key) => {
     const value = obj[key]
     if (value && typeof value === 'object') {
-      return lines.concat(toLines(value, pathSep, defaultKey, prefix + key + pathSep))
+      return lines.concat(
+        toLines(value, pathSep, defaultKey, prefix + key + pathSep)
+      )
     } else {
-      const k = key === defaultKey ? prefix.slice(0, -(pathSep.length)) : prefix + key
+      const k =
+        key === defaultKey ? prefix.slice(0, -pathSep.length) : prefix + key
       lines.push([k, value])
       return lines
     }
@@ -114,20 +124,33 @@ const toLines = (obj, pathSep, defaultKey, prefix = '') => {
  * @param {string} [options.newline='\n']
  * @param {string} [options.pathSep='.']
  */
-function stringify (input, {
-  commentPrefix = '# ',
-  defaultKey = '',
-  indent = '    ',
-  keySep = ' = ',
-  latin1 = true,
-  lineWidth = 80,
-  newline = '\n',
-  pathSep = '.'
-} = {}) {
+function stringify(
+  input,
+  {
+    commentPrefix = '# ',
+    defaultKey = '',
+    indent = '    ',
+    keySep = ' = ',
+    latin1 = true,
+    lineWidth = 80,
+    newline = '\n',
+    pathSep = '.'
+  } = {}
+) {
   if (!input) return ''
   if (!Array.isArray(input)) input = toLines(input, pathSep, defaultKey)
-  const foldLine = getFold({ indent, latin1, lineWidth, newline: '\\' + newline })
-  const foldComment = getFold({ indent: commentPrefix, latin1, lineWidth, newline })
+  const foldLine = getFold({
+    indent,
+    latin1,
+    lineWidth,
+    newline: '\\' + newline
+  })
+  const foldComment = getFold({
+    indent: commentPrefix,
+    latin1,
+    lineWidth,
+    newline
+  })
   return input
     .map(line => {
       switch (true) {
