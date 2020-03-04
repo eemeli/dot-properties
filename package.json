@@ -14,7 +14,8 @@
     "i18n"
   ],
   "files": [
-    "*.js"
+    "*.js",
+    "index.d.ts"
   ],
   "scripts": {
     "lint": "eslint .",
