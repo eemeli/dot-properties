@@ -5,7 +5,10 @@ node_js:
 
 jobs:
   include:
-    - stage: lint
+    - stage: lint & codecov
       node_js: node
       script:
         - npm run lint
+        - npm install -g codecov
+        - npx jest --coverage
+        - codecov
