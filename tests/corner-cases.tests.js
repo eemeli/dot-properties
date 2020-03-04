@@ -36,6 +36,16 @@ describe('lines', () => {
     expect(lines).toMatchObject([...exp, '', ''])
   })
 
+  test('read lines with CRLF endings', () => {
+    const src = `language = English\r\nmessage = Welcome to \\\r\n  Wikipedia!\r\n\r\n`
+    const lines = parseLines(src)
+    expect(lines).toMatchObject([
+      ['language', 'English'],
+      ['message', 'Welcome to Wikipedia!'],
+      ''
+    ])
+  })
+
   test('write lines', () => {
     const str = stringify(exp)
     expect(parseLines(str)).not.toMatchObject(exp)

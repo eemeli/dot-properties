@@ -86,6 +86,11 @@ const endOfValue = (src, offset) => {
   while (ch && ch !== '\r' && ch !== '\n') {
     offset += ch === '\\' ? 2 : 1
     ch = src[offset]
+    if (ch === '\n' && src[offset - 1] === '\r') {
+      // escaped CRLF line terminator
+      offset += 1
+      ch = src[offset]
+    }
   }
   return offset
 }
