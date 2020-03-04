@@ -55,6 +55,11 @@ describe('lines', () => {
 })
 
 describe('stringify', () => {
+  test('empty input', () => {
+    const res = stringify(null)
+    expect(res).toBe('')
+  })
+
   test('ascii', () => {
     const src = 'ipsum áé ĐѺ lore\0'
     const exp = 'ipsum áé \\u0110\\u047a lore\\u0000'
@@ -96,9 +101,21 @@ deserunt mollit anim id est laborum.`
     const lines = [['key1', 'value1'], '#', '! ', ['key2', 'value2']]
     expect(stringify(lines)).toBe('key1 = value1\n# \n# \nkey2 = value2')
   })
+
+  test('Negative linewidth', () => {
+    const foo = 'foo '.repeat(200)
+    expect(stringify([foo], { lineWidth: -1 })).toBe(`# ${foo}`)
+  })
+
+  test('Whitespace in comment at folding point', () => {
+    const lines = ['comment\rcomment\ncomment\fcomment\t']
+    expect(stringify(lines, { lineWidth: 10 })).toBe(
+      '# comment\n# comment\n# comment\f\n# comment\t'
+    )
+  })
 })
 
-describe('default values', () => {
+describe('options', () => {
   const obj = {
     '': 'root',
     a: { '': 'A.', a: 'A.A' },
@@ -122,5 +139,22 @@ a.a:A.A
 b:B
 b.b:B.B`
     expect(stringify(obj, { keySep: ':' })).toBe(src)
+  })
+
+  test('custom path separator', () => {
+    const src = `:root
+a:A
+a/:A.
+a/a:A.A
+b/b:B.B
+b:B`
+    expect(parse(src, '/')).toMatchObject(obj)
+  })
+})
+
+describe('bad input', () => {
+  test('malformed unicode escape', () => {
+    const src = `foo: \\uabcx`
+    expect(parse(src, true)).toMatchObject({ foo: 'uabcx' })
   })
 })
