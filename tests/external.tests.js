@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { parse, stringify } = require('../lib/index')
+const { parse, parseLines, stringify } = require('../lib/index')
 
 function testCase({
   name,
@@ -13,11 +13,25 @@ function testCase({
     const src = fs.readFileSync(path.resolve(root, srcPath), 'utf8')
     const tgt = fs.readFileSync(path.resolve(root, tgtPath), 'utf8')
     const exp = JSON.parse(tgt)
+
+    // parse(string): object
     const res = parse(src, parsePath)
     expect(res).toMatchObject(exp)
+
+    // stringify(object): string
     const src2 = stringify(res)
     const res2 = parse(src2, parsePath)
     expect(res2).toMatchObject(exp)
+
+    // parseLines(string, true): Node[]
+    const ast = parseLines(src, true)
+    const res3 = parse(ast, parsePath)
+    expect(res3).toMatchObject(exp)
+
+    // stringify(Node[])
+    const src3 = stringify(ast)
+    const res4 = parse(src3, parsePath)
+    expect(res4).toMatchObject(exp)
   })
 }
 
