@@ -12,21 +12,25 @@ For usage examples, see [below](#example) or take a look through the project's [
 
 ## API
 
-### `parse(src[, path])`
+### `parse(str: string | Line[] | Node[], path?: boolean | string): object`
 
 Parses an input string read from a .properties file into a JavaScript Object
 
 If the second `path` parameter is true, dots `.` in keys will result in a multi-level object (use a string value to customise). If a parent level is directly assigned a value while it also has a child with an assigned value, the parent value will be assigned to its empty string `''` key. Repeated keys will take the last assigned value. Key order is not guaranteed, but is likely to match the order of the input lines.
 
-### `parseLines(src)`
+### `parseLines(str: string, ast?: false): Line[]`
 
 Splits the input string into an array of logical lines; useful if you want to preserve order, comments and/or empty lines while processing. Used internally by `parse()`.
 
 Key-value pairs are `[key, value]` arrays with string values. Escape sequences in keys and values are parsed. Empty lines are included as empty strings `''`, and comments as strings that start with `#` or `!` characters. Leading whitespace is not included.
 
-### `stringify(input[, options])`
+### `parseLines(str: string, ast: true): Node[]`
 
-Stringifies a hierarchical object or an array of lines to `.properties` format
+Splits the input string into an array of AST nodes; see [the source](./lib/ast.js) for more details.
+
+### `stringify(input: object, options?: StringifyOptions): string`
+
+Stringifies a hierarchical object or an array of lines or nodes to `.properties` format
 
 If `input` is a hierarchical object, keys will consist of the path parts joined by `.` characters. With array input, string values represent blank or comment lines and string arrays are `[key, value]` pairs. Control characters and `\` will be appropriately escaped. If the `latin1` option is not set to false, all non-Latin-1 characters will also be `\u` escaped. Non-empty string lines represent comments, and will have any existing `#` or `!` prefix replaced by the `commentPrefix`.
 
