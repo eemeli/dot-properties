@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { parse, parseLines, stringify } = require('../lib/index')
+const { Pair, parse, parseLines, stringify } = require('../lib/index')
 
 describe('lines', () => {
   const srcPath = path.resolve(
@@ -156,5 +156,28 @@ describe('bad input', () => {
   test('malformed unicode escape', () => {
     const src = `foo: \\uabcx`
     expect(parse(src, true)).toMatchObject({ foo: 'uabcx' })
+  })
+})
+
+describe('AST', () => {
+  test('pair separator', () => {
+    const src = 'key:\nkey2: value2'
+    const ast = parseLines(src, true)
+    expect(ast[0].separator(src)).toBe(':')
+    expect(ast[1].separator(src)).toBe(': ')
+  })
+
+  test('add node', () => {
+    const src = 'key:\nkey2: value2'
+    const ast = parseLines(src, true)
+    ast.push(new Pair('key3', 'value3'))
+    expect(ast[2].separator(src)).toBeNull()
+
+    expect(parse(ast)).toMatchObject({
+      key: '',
+      key2: 'value2',
+      key3: 'value3'
+    })
+    expect(stringify(ast)).toBe('key = \nkey2 = value2\nkey3 = value3')
   })
 })

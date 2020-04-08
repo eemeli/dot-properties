@@ -1,3 +1,40 @@
+export class Node {
+  type: Node.Type
+  range?: [number, number] | [number, number, number, number]
+  constructor(
+    type: Node.Type,
+    range?: [number, number] | [number, number, number, number]
+  )
+}
+namespace Node {
+  type Type = 'PAIR' | 'COMMENT' | 'EMPTY_LINE'
+}
+
+export class Comment extends Node {
+  type: 'COMMENT'
+  comment: string
+  range?: [number, number]
+  constructor(comment: string, range?: [number, number])
+}
+
+export class EmptyLine extends Node {
+  type: 'EMPTY_LINE'
+  range?: [number, number]
+}
+
+export class Pair extends Node {
+  type: 'PAIR'
+  key: string
+  value: string
+  range?: [number, number, number, number]
+  constructor(
+    key: string,
+    value: string,
+    range?: [number, number, number, number]
+  )
+  separator(src: string): string | null
+}
+
 // prettier-ignore
 interface StringifyOptions {
   commentPrefix?: '# ' | string,  // could also use e.g. '!'
@@ -10,6 +47,15 @@ interface StringifyOptions {
   pathSep?: '.' | string          // if non-default, use the same in parse()
 }
 
-export function parse(str: string): { [key: string]: any }
-export function parseLines(str: string): Array<string | string[]>
-export function stringify(object: any, options?: StringifyOptions): string
+type Line = string | string[]
+interface Tree {
+  [key: string]: string | Tree
+}
+
+export function parseLines(str: string, ast?: false): Line[]
+export function parseLines(str: string, ast: true): Node[]
+export function parse(
+  str: string | Line[] | Node[],
+  path?: boolean | string
+): Tree
+export function stringify(object: object, options?: StringifyOptions): string
