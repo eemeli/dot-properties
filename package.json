@@ -28,8 +28,10 @@
     ]
   },
   "prettier": {
+    "arrowParens": "avoid",
     "semi": false,
-    "singleQuote": true
+    "singleQuote": true,
+    "trailingComma": "none"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
