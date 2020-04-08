@@ -1,7 +1,6 @@
 {
   "name": "dot-properties",
   "version": "0.4.0",
-  "main": "index.js",
   "license": "MIT",
   "author": "Eemeli Aro <eemeli@gmail.com>",
   "repository": "github:eemeli/dot-properties",
@@ -13,9 +12,9 @@
     "bundle",
     "i18n"
   ],
+  "main": "./lib/index.js",
   "files": [
-    "*.js",
-    "index.d.ts"
+    "lib/"
   ],
   "scripts": {
     "lint": "eslint .",

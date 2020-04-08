@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { parse, parseLines, stringify } = require('../index')
+const { parse, parseLines, stringify } = require('../lib/index')
 
 describe('lines', () => {
   const srcPath = path.resolve(

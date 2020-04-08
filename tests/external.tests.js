@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { parse, stringify } = require('../index')
+const { parse, stringify } = require('../lib/index')
 
 function testCase({
   name,
