@@ -6,8 +6,8 @@ export class Node {
     range?: [number, number] | [number, number, number, number]
   )
 }
-namespace Node {
-  type Type = 'PAIR' | 'COMMENT' | 'EMPTY_LINE'
+declare namespace Node {
+  type Type = 'COMMENT' | 'EMPTY_LINE' | 'PAIR'
 }
 
 export class Comment extends Node {
@@ -53,7 +53,7 @@ interface Tree {
 }
 
 export function parseLines(str: string, ast?: false): Line[]
-export function parseLines(str: string, ast: true): Node[]
+export function parseLines(str: string, ast: true): Required<Node>[]
 export function parse(
   str: string | Line[] | Node[],
   path?: boolean | string
