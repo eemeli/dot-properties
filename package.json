@@ -13,7 +13,6 @@
     "i18n"
   ],
   "types": "./lib/index.d.ts",
-  "typings": "./lib/index.d.ts",
   "main": "./lib/index.js",
   "files": [
     "lib/"
