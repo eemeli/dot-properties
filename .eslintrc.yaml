@@ -6,7 +6,7 @@ env:
 
 extends:
   - eslint:recommended
-  - plugin:prettier/recommended
+  - prettier
 
 rules:
   no-control-regex: 0
