@@ -2,7 +2,6 @@ name: Node.js
 
 on:
   pull_request:
-    branches: [master]
   push:
     branches: [master]
   workflow_dispatch:
@@ -10,12 +9,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: [16, 20, latest]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with: { node-version: 14.x }
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm run lint
       - run: npx jest --coverage
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v4
