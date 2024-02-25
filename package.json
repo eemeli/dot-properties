@@ -19,6 +19,7 @@
   ],
   "scripts": {
     "lint": "eslint .",
+    "prettier": "prettier --write .",
     "test": "jest"
   },
   "jest": {
