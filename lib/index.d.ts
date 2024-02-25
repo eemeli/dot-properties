@@ -78,6 +78,7 @@ interface StringifyOptions {
   lineWidth?: 80 | number,        // use null to disable
   newline?: '\n' | string,        // Windows uses \r\n
   pathSep?: '.' | string          // if non-default, use the same in parse()
+  foldChars?: '\f\t .' | string
 }
 
 /**
