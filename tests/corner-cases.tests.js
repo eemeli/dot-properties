@@ -86,7 +86,7 @@ occaecat cupidatat non proident, sunt in culpa qui officia\r
 deserunt mollit anim id est laborum.`
     expect(stringify([lorem])).toBe(lorem.replace(/\r\n/gm, '\n# ').trim())
     expect(stringify([['key', lorem]])).toBe(
-      'key = ' + lorem.replace(/\r\n/g, '\\r\\n\\\n    ')
+      'key = \\\n    ' + lorem.replace(/\r\n/g, '\\r\\n\\\n    ')
     )
   })
 
