@@ -1,4 +1,4 @@
-# dot-properties <a href="https://www.npmjs.com/package/dot-properties"><img align="right" src="https://badge.fury.io/js/dot-properties.svg" title="npm package" /></a><a href="https://codecov.io/gh/eemeli/dot-properties"><img align="right" src="https://codecov.io/gh/eemeli/dot-properties/branch/master/graph/badge.svg" title="Code coverage" /></a><a href="https://travis-ci.org/eemeli/dot-properties"><img align="right" src="https://travis-ci.org/eemeli/dot-properties.svg?branch=master" title="Build status" /></a>
+# dot-properties
 
 JavaScript `parse()` and `stringify()` for `.properties` (`text/x-java-properties`) files as defined in [java.util.Properties](https://docs.oracle.com/javase/9/docs/api/java/util/Properties.html#load-java.io.Reader-).
 

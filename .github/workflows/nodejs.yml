@@ -20,4 +20,3 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npx jest --coverage
-      - uses: codecov/codecov-action@v4
