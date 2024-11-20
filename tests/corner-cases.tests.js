@@ -155,7 +155,13 @@ b:B`
 describe('bad input', () => {
   test('malformed unicode escape', () => {
     const src = `foo: \\uabcx`
-    expect(parse(src, true)).toMatchObject({ foo: 'uabcx' })
+    expect(parse(src, true)).toEqual({ foo: 'uabcx' })
+  })
+
+  test('prototype pollution', () => {
+    const src = '__proto__.pollutedKey = pollutedValue'
+    expect(parse(src, true)).toEqual({})
+    expect({}.pollutedKey).not.toBeDefined()
   })
 })
 
