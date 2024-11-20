@@ -46,7 +46,8 @@ const defaultOptions = {
   latin1: true,         // default encoding for .properties files
   lineWidth: 80,        // use null to disable
   newline: '\n',        // Windows uses \r\n
-  pathSep: '.'          // if non-default, use the same in parse()
+  pathSep: '.',         // if non-default, use the same in parse()
+  foldChars: '\f\t .'   // preferred characters for line folding
 }
 ```
 
