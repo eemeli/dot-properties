@@ -75,7 +75,7 @@ interface StringifyOptions {
   indent?: '    ' | string,       // tabs are also valid
   keySep?: ' = ' | string,        // should have at most one = or :
   latin1?: true | boolean,        // default encoding for .properties files
-  lineWidth?: 80 | number,        // use null to disable
+  lineWidth?: 80 | number | null, // use null to disable
   newline?: '\n' | string,        // Windows uses \r\n
   pathSep?: '.' | string          // if non-default, use the same in parse()
   foldChars?: '\f\t .' | string
