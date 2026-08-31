@@ -102,6 +102,18 @@ deserunt mollit anim id est laborum.`
     expect(stringify(lines)).toBe('key1 = value1\n# \n# \nkey2 = value2')
   })
 
+  test('escape leading # and ! in keys so they round-trip', () => {
+    expect(stringify([['#key', 'v']])).toBe('\\#key = v')
+    expect(stringify([['!key', 'v']])).toBe('\\!key = v')
+    expect(parse(stringify({ '#key': 'v', '!key': 'w' }))).toEqual({
+      '#key': 'v',
+      '!key': 'w'
+    })
+    // # and ! are only comment markers at the start of a line, so they stay
+    // unescaped elsewhere in the key
+    expect(stringify([['a#b!c', 'v']])).toBe('a#b!c = v')
+  })
+
   test('Negative linewidth', () => {
     const foo = 'foo '.repeat(200)
     expect(stringify([foo], { lineWidth: -1 })).toBe(`# ${foo}`)
