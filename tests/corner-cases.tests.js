@@ -46,6 +46,20 @@ describe('lines', () => {
     ])
   })
 
+  test('continue keys and separators across CRLF and CR line ends', () => {
+    for (const eol of ['\r\n', '\r']) {
+      const src = [
+        `lang\\${eol}  uage = English`,
+        `message \\${eol}  = Welcome to \\${eol}  Wikipedia!`,
+        ''
+      ].join(eol)
+      expect(parseLines(src)).toMatchObject([
+        ['language', 'English'],
+        ['message', 'Welcome to Wikipedia!']
+      ])
+    }
+  })
+
   test('write lines', () => {
     const str = stringify(exp)
     expect(parseLines(str)).not.toMatchObject(exp)
